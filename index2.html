@@ -141,5 +141,33 @@ input {
   <h2>Processing</h2>
   <p class="small">Verifying contribution and preparing guest placement…</p>
 </div>
+  <script>
+const btn = document.querySelector(".button");
+
+btn.addEventListener("click", function(e){
+  e.preventDefault();
+
+  // hide main page sections
+  document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+
+  // show processing
+  document.getElementById("processing").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("processing").style.display = "none";
+    document.getElementById("credentials").style.display = "block";
+  }, 2500);
+});
+
+document.getElementById("submitBtn").addEventListener("click", function(e){
+  e.preventDefault();
+
+  document.getElementById("credentials").style.display = "none";
+  document.getElementById("final").style.display = "block";
+
+  // OPTIONAL: capture data locally (demo only)
+  console.log("Guest submitted details");
+});
+</script>
 </body>
 </html>
