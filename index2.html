@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Private Donor Evening</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
@@ -14,26 +15,31 @@ body {
   justify-content: center;
   font-family: 'Inter', sans-serif;
 }
+
 .container {
   max-width: 440px;
   padding: 60px 24px;
 }
+
 h1 {
   font-family: 'Playfair Display', serif;
   font-size: 28px;
   letter-spacing: 1px;
   margin: 10px 0 0;
 }
+
 h2 {
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #888;
 }
+
 .section {
   margin-bottom: 48px;
   position: relative;
 }
+
 .section:after {
   content: "";
   display: block;
@@ -41,17 +47,21 @@ h2 {
   background: linear-gradient(to right, transparent, #333, transparent);
   margin-top: 28px;
 }
+
 .section:last-child:after {
   display: none;
 }
+
 .small {
   font-size: 12px;
   color: #888;
   line-height: 1.6;
 }
+
 .highlight {
   color: #d6c7a1;
 }
+
 .button {
   display: block;
   text-align: center;
@@ -62,12 +72,14 @@ h2 {
   color: #eaeaea;
   letter-spacing: 1px;
   font-size: 12px;
-  transition: all 0.3s ease;
+  cursor: pointer;
 }
+
 .button:hover {
   border-color: #888;
   background: rgba(255,255,255,0.03);
 }
+
 input {
   width: 100%;
   padding: 12px;
@@ -76,18 +88,33 @@ input {
   border: 1px solid #333;
   color: #fff;
 }
-.title-block {
-  margin-bottom: 60px;
+
+.hidden {
+  display: none;
 }
-.subtitle {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #777;
+
+.loader {
+  border: 1px solid #333;
+  border-top: 1px solid #d6c7a1;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
 </head>
+
 <body>
 <div class="container">
+
+<!-- MAIN PAGE -->
+<div id="main">
 
 <div class="title-block">
   <div class="subtitle">National Philanthropic Fund</div>
@@ -129,7 +156,7 @@ input {
 
   <input type="text" placeholder="Enter custom amount (USD)">
 
-  <a href="#" class="button">Confirm Participation</a>
+  <a class="button" id="confirmBtn">Confirm Participation</a>
 </div>
 
 <div class="section">
@@ -137,20 +164,50 @@ input {
 </div>
 
 </div>
-  <div id="processing" class="section" style="display:none;">
+
+<!-- PROCESSING -->
+<div id="processing" class="hidden">
   <h2>Processing</h2>
   <p class="small">Verifying contribution and preparing guest placement…</p>
+  <div class="loader"></div>
 </div>
-  <script>
-const btn = document.querySelector(".button");
 
-btn.addEventListener("click", function(e){
-  e.preventDefault();
+<!-- CREDENTIALS -->
+<div id="credentials" class="hidden">
+  <h2>Guest Registration</h2>
+  <p class="small">Please complete your details for entry confirmation.</p>
 
-  // hide main page sections
-  document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+  <input type="text" id="name" placeholder="Full Name">
+  <input type="email" id="email" placeholder="Email Address">
+  <input type="text" id="phone" placeholder="Contact Number">
 
-  // show processing
+  <p class="small" style="margin-top:20px;">
+    You will be contacted with final entry instructions prior to the evening.
+  </p>
+
+  <a class="button" id="submitBtn">Submit Details</a>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="hidden">
+  <h2>Confirmation</h2>
+  <p class="small">
+    Your details have been received.<br><br>
+    Your guest placement is being finalized.<br><br>
+    You will be contacted shortly.
+  </p>
+
+  <p class="small highlight" style="margin-top:30px;">
+    Status: Pending Final Confirmation
+  </p>
+</div>
+
+</div>
+
+<script>
+// STEP 1 → Confirm click
+document.getElementById("confirmBtn").addEventListener("click", function(){
+  document.getElementById("main").style.display = "none";
   document.getElementById("processing").style.display = "block";
 
   setTimeout(() => {
@@ -159,15 +216,18 @@ btn.addEventListener("click", function(e){
   }, 2500);
 });
 
-document.getElementById("submitBtn").addEventListener("click", function(e){
-  e.preventDefault();
+// STEP 2 → Submit credentials
+document.getElementById("submitBtn").addEventListener("click", function(){
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+
+  console.log("Guest:", name, email, phone);
 
   document.getElementById("credentials").style.display = "none";
   document.getElementById("final").style.display = "block";
-
-  // OPTIONAL: capture data locally (demo only)
-  console.log("Guest submitted details");
 });
 </script>
+
 </body>
 </html>
