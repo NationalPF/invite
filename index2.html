@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Private Donor Evening</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
@@ -84,7 +85,9 @@ input {
   color: #fff;
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 .loader {
   border: 1px solid #333;
@@ -104,9 +107,10 @@ input {
 </head>
 
 <body>
+
 <div class="container">
 
-<!-- MAIN PAGE -->
+<!-- MAIN -->
 <div id="main">
 
 <div class="section">
@@ -136,7 +140,6 @@ input {
 
 <div class="section">
   <h2>Participation</h2>
-  <p class="small">Attendance is reserved for confirmed contributors.</p>
 
   <p class="small"><span class="highlight">Supporting Contributor</span><br>USD 5,000</p>
   <p class="small"><span class="highlight">Principal Contributor</span><br>USD 15,000</p>
@@ -159,7 +162,6 @@ input {
 <!-- CREDENTIALS -->
 <div id="credentials" class="hidden">
   <h2>Guest Registration</h2>
-  <p class="small">Please complete your details for entry confirmation.</p>
 
   <input type="text" id="name" placeholder="Full Name">
   <input type="email" id="email" placeholder="Email Address">
@@ -175,6 +177,7 @@ input {
 <!-- FINAL -->
 <div id="final" class="hidden">
   <h2>Confirmation</h2>
+
   <p class="small">
     Your details have been received.<br><br>
     Your guest placement is being finalized.<br><br>
@@ -186,21 +189,15 @@ input {
   </p>
 </div>
 
-<!-- HIDDEN FORM (FORMSPREE BACKEND) -->
-<form id="hiddenForm" action="https://formspree.io/f/maqakpey" method="POST" style="display:none;">
-  <input type="text" name="name" id="f_name">
-  <input type="email" name="email" id="f_email">
-  <input type="text" name="phone" id="f_phone">
-  <input type="text" name="contribution" id="f_contribution">
-</form>
-
 </div>
 
 <script>
+
 let selectedAmount = "";
 
-// Step 1: confirm participation
+// STEP 1
 document.getElementById("confirmBtn").addEventListener("click", function(){
+
   selectedAmount = document.getElementById("amount").value || "Not specified";
 
   document.getElementById("main").style.display = "none";
@@ -212,33 +209,38 @@ document.getElementById("confirmBtn").addEventListener("click", function(){
   }, 2500);
 });
 
-// Step 2: submit credentials
-document.getElementById("submitBtn").addEventListener("click", function(e){
-  e.preventDefault();
+// STEP 2
+document.getElementById("submitBtn").addEventListener("click", async function(){
 
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const phone = document.getElementById("phone").value;
 
-  // fill hidden form (IMPORTANT FIX)
-  document.getElementById("f_name").value = name;
-  document.getElementById("f_email").value = email;
-  document.getElementById("f_phone").value = phone;
-  document.getElementById("f_contribution").value = selectedAmount;
-
-  // UX state
+  // UX loading state
   const btn = document.getElementById("submitBtn");
   btn.innerText = "Submitting...";
   btn.style.opacity = "0.6";
   btn.style.pointerEvents = "none";
 
-  setTimeout(() => {
-    document.getElementById("hiddenForm").submit();
+  // silent send (NO redirect)
+  await fetch("https://formspree.io/f/maqakpey", {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      phone: phone,
+      contribution: selectedAmount
+    })
+  });
 
-    document.getElementById("credentials").style.display = "none";
-    document.getElementById("final").style.display = "block";
-  }, 1200);
+  document.getElementById("credentials").style.display = "none";
+  document.getElementById("final").style.display = "block";
 });
+
 </script>
 
 </body>
