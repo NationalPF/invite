@@ -15,31 +15,26 @@ body {
   justify-content: center;
   font-family: 'Inter', sans-serif;
 }
-
 .container {
   max-width: 440px;
   padding: 60px 24px;
 }
-
 h1 {
   font-family: 'Playfair Display', serif;
   font-size: 28px;
   letter-spacing: 1px;
   margin: 10px 0 0;
 }
-
 h2 {
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #888;
 }
-
 .section {
   margin-bottom: 48px;
   position: relative;
 }
-
 .section:after {
   content: "";
   display: block;
@@ -47,21 +42,17 @@ h2 {
   background: linear-gradient(to right, transparent, #333, transparent);
   margin-top: 28px;
 }
-
 .section:last-child:after {
   display: none;
 }
-
 .small {
   font-size: 12px;
   color: #888;
   line-height: 1.6;
 }
-
 .highlight {
   color: #d6c7a1;
 }
-
 .button {
   display: block;
   text-align: center;
@@ -73,13 +64,12 @@ h2 {
   letter-spacing: 1px;
   font-size: 12px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
-
 .button:hover {
   border-color: #888;
   background: rgba(255,255,255,0.03);
 }
-
 input {
   width: 100%;
   padding: 12px;
@@ -88,11 +78,17 @@ input {
   border: 1px solid #333;
   color: #fff;
 }
-
+.title-block {
+  margin-bottom: 60px;
+}
+.subtitle {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #777;
+}
 .hidden {
   display: none;
 }
-
 .loader {
   border: 1px solid #333;
   border-top: 1px solid #d6c7a1;
@@ -102,7 +98,6 @@ input {
   animation: spin 1s linear infinite;
   margin-top: 20px;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -113,7 +108,7 @@ input {
 <body>
 <div class="container">
 
-<!-- MAIN PAGE -->
+<!-- MAIN -->
 <div id="main">
 
 <div class="title-block">
@@ -205,7 +200,6 @@ input {
 </div>
 
 <script>
-// STEP 1 → Confirm click
 document.getElementById("confirmBtn").addEventListener("click", function(){
   document.getElementById("main").style.display = "none";
   document.getElementById("processing").style.display = "block";
@@ -216,16 +210,25 @@ document.getElementById("confirmBtn").addEventListener("click", function(){
   }, 2500);
 });
 
-// STEP 2 → Submit credentials
 document.getElementById("submitBtn").addEventListener("click", function(){
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const phone = document.getElementById("phone").value;
 
-  console.log("Guest:", name, email, phone);
-
-  document.getElementById("credentials").style.display = "none";
-  document.getElementById("final").style.display = "block";
+  fetch("https://formspree.io/f/maqakpey", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      phone: phone
+    })
+  }).then(() => {
+    document.getElementById("credentials").style.display = "none";
+    document.getElementById("final").style.display = "block";
+  });
 });
 </script>
 
